@@ -121,7 +121,8 @@ itemFrequencyPlot(products, topN=5)
 #itemFrequencyPlot(products, topN=ncol(products))
 ```
 
-Frequnecy plot based on the support can be seen below. 
+Frequnecy plot based on the support can be seen below.  
+
 __Frequency of items with minimum 0.1 support :__
 ```{r FrequencyPlot3, message = FALSE, warning = FALSE}
 itemFrequencyPlot(products, support = 0.1)

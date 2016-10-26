@@ -5,7 +5,7 @@ date: "25 October 2016"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, message = FALSE, warning = FALSE, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -168,7 +168,7 @@ These are the top 10 frequent item-sets that have a minimum support of 1% and mi
 inspect(sort(products.apriori, by=c("support","confidence"))[1:10])
 ```
 These are the top 5 frequent item-sets that have a minimum support of 1% and minimum confidence of 10% sorted in descending order of lift.
-```{r}
+```{r Rules_Lift, message = FALSE, warning = FALSE}
 inspect(sort(products.apriori, by="lift")[1:5])
 ```
  
@@ -179,9 +179,7 @@ From the above list of rules, we can see some redudancy.
 Ex: We can see {Pencils} => {Candy Bar} ; {Toothpaste} => {Candy Bar}; {Pencils, Toothpaste} => {Candy Bar}.  
 This has some amount of redundancy.  
 We can identify and remove redundancy using below commands.
-```{r}
-#& !rhs %in% c("Pencils", "Toothpaste")
-
+```{r Redundant, message = FALSE, warning = FALSE}
 subset.matrix <- is.subset(products.apriori, products.apriori)
 subset.matrix[lower.tri(subset.matrix, diag=T)] <- NA
 redundant <- colSums(subset.matrix, na.rm=T) >= 1
@@ -199,19 +197,19 @@ __Scatter Plot:__ Plots all rules with Support on x-axis and confidence on y-axe
 Brighter the color, more the lift.  
 We can see top right corner point which has high Support and high confidence but low lift.  
 But we can't see the actual rule in this graph which is a great disadvantage.  
-```{r}
+```{r ScatterPlot, message = FALSE, warning = FALSE}
 plot(products.apriori.pruned)
 ```
 
 __Grouped Plot:__ This plots the LHS items and RHS items with lines connecting and bubbles placed on the intersection of LHS and RHS items. Sixe of the bubble represents Support and color represents the Lift.  
 Compared to Scatterplot this is a better view as it shows the LHS and RHS items and their associations along with support and Lift.  
 But confidence is missed in this graph.
-```{r}
+```{r GroupedPlot, message = FALSE, warning = FALSE}
 plot(products.apriori.pruned,method="group")
 ```
 __Graph Plot:__ This plots the Items in Green bubbles and the associations between the Items are joined with arrows with the bubble in between. Sixe represents the Support and color represents the lift.  
 There is an interactive version but can't be plotted in the markdown file and hence it's commented.
-```{r}
+```{r GraphPlot, message = FALSE, warning = FALSE}
 plot(products.apriori.pruned,method="graph")
 #plot(products.apriori.pruned,method="graph",interactive=TRUE,shading=NA)
 ```
@@ -219,7 +217,7 @@ plot(products.apriori.pruned,method="graph")
 From the Item frequency plot we can see Magazine is the most frequent item and hence it's placed in the center with all other items plotted around it.
 
 We'll see how Magazine is associated to other items.
-```{r}
+```{r Magazine, message = FALSE, warning = FALSE}
 summary(products)
 products.apriori.magazine <- apriori(products, parameter=list(support=0.01, confidence = 0.1,  minlen=2, maxlen =5),
                             appearance = list(rhs=c("Magazine"), default = "lhs"))
@@ -233,7 +231,7 @@ We can see this plot is different from the previous graph plot. In this we direc
 Width of the arrow represents support and color represents lift. 
 Candy Bar => Magazine has the highest support but relatively low lift.
 
-```{r}
+```{r GraphPlotMagazine, message = FALSE, warning = FALSE}
 plot(products.apriori.magazine,method="graph",control = list(type="itemsets"))
 ```
 

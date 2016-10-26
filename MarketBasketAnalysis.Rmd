@@ -1,5 +1,5 @@
 ---
-title: "Market Basket Analysis Assignment"
+title: "Market Basket Analysis"
 author: "Krupan"
 date: "25 October 2016"
 output: html_document
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
    2. Summary, Item Frequency and Plots
    3. Association Rules using Apiori Algorithm
    4. Analysis on Rules
-   5. Identifying and Removing Redudant Rules
+   5. Identifying and Removing Redundant Rules
    6. Plot different Association Graphs
    7. Association for most frequent item
    8. Recommendations
@@ -75,7 +75,6 @@ __Summary__ gives the below information.
 
   1. No. of transactions and no. of items in the dataset. 
   2. Most Frequent items in the dataset. We can see Magazine is the most frequent item.
-
   3. Element Length distribution gives distribution of no. of items vs transaction.  
      __Ex:__ 4848 transactions have one item and 1192 has 2 items and so on.
   4. Five number summary for the distribution is given.  
@@ -115,6 +114,7 @@ We can see different Frequency plots below. Magazines are the most frequent item
 ```{r FrequencyPlot1, message = FALSE, warning = FALSE}
 itemFrequencyPlot(products)
 ```
+  
 Top 5 Frequnt items can be seen below.
 ```{r FrequencyPlot2, message = FALSE, warning = FALSE}
 itemFrequencyPlot(products, topN=5)
@@ -128,14 +128,15 @@ itemFrequencyPlot(products, support = 0.1)
 ```
 
 #### Step 3: Association Rules using Apiori Algorithm
-We passed two parameters to apriori function. 
- 1. Transactions Dataset
- 2. List of parameters.  
-    Minimum Support = 0.01 => Rules should have minimum support of 0.01  
-    Minimum Confidence = 0.1 => Rules should have miniumn confidence of 0.1
-    Minimum Length = 2 => Minimum length of rule should be 2; which means rule should contains atleast two items involved.      Maximum Length = 5
+We passed two parameters to apriori function.   
+ 1. Transactions Dataset  
+ 2. List of parameters.    
+    Minimum Support = 0.01 => Rules should have minimum support of 0.01    
+    Minimum Confidence = 0.1 => Rules should have miniumn confidence of 0.1  
+    Minimum Length = 2 => Minimum length of rule should be 2; which means rule should contains atleast two items involved.  
+    Maximum Length = 5 => Maximum length of rule should be 5; which means rule should contains at max two items involved.
     
-    The default parameters are minimum support of 0.1, minimum confidence of 0.8, maxlen of 10 items
+The default parameters are minimum support of 0.1, minimum confidence of 0.8, maxlen of 10 items
 
 __Support__:  It's the percentage of transactions that contain all of the items in an itemset (e.g., pencil, paper and rubber). The higher the support the more frequently the itemset occurs. Rules with a high support are preferred since they are likely to be applicable to a large number of future transactions.
 
@@ -172,20 +173,19 @@ These are the top 5 frequent item-sets that have a minimum support of 1% and min
 inspect(sort(products.apriori, by="lift")[1:5])
 ```
  
-#### Step 5: Identifying and Removing Redudant Rules
+#### Step 5: Identifying and Removing Redundant Rules
 
 
-From the above list of rules, we can see some redudancy. 
-Ex: We can see {Pencils} => {Candy Bar} ; {Toothpaste} => {Candy Bar}; {Pencils, Toothpaste} => {Candy Bar}.  
-This has some amount of redundancy.  
-We can identify and remove redundancy using below commands.
+From the above list of rules, we can see some redundancy.   
+Ex: We can see {Pencils} => {Candy Bar} ; {Toothpaste} => {Candy Bar}; {Pencils, Toothpaste} => {Candy Bar}.    
+This has some amount of redundancy.    
+We can identify and remove redundancy using below commands.  
 ```{r Redundant, message = FALSE, warning = FALSE}
 subset.matrix <- is.subset(products.apriori, products.apriori)
 subset.matrix[lower.tri(subset.matrix, diag=T)] <- NA
 redundant <- colSums(subset.matrix, na.rm=T) >= 1
 which(redundant)
 products.apriori.pruned <- products.apriori[!redundant]
-
 inspect(sort(products.apriori.pruned, by="lift"))
 ```
 
@@ -201,18 +201,21 @@ But we can't see the actual rule in this graph which is a great disadvantage.
 plot(products.apriori.pruned)
 ```
 
-__Grouped Plot:__ This plots the LHS items and RHS items with lines connecting and bubbles placed on the intersection of LHS and RHS items. Sixe of the bubble represents Support and color represents the Lift.  
-Compared to Scatterplot this is a better view as it shows the LHS and RHS items and their associations along with support and Lift.  
+__Grouped Plot:__ This plots the LHS items and RHS items with lines connecting and bubbles placed on the intersection of LHS and RHS items.  
+Size of the bubble represents Support and color represents the Lift.  
+Compared to Scatterplot this is a better view as it shows the LHS and RHS items and their associations along with support and Lift.    
 But confidence is missed in this graph.
 ```{r GroupedPlot, message = FALSE, warning = FALSE}
 plot(products.apriori.pruned,method="group")
 ```
-__Graph Plot:__ This plots the Items in Green bubbles and the associations between the Items are joined with arrows with the bubble in between. Sixe represents the Support and color represents the lift.  
+  
+__Graph Plot:__ This plots the Items, associations between the Items are joined with arrows with the bubble in between. Size represents the Support and color represents the lift.    
 There is an interactive version but can't be plotted in the markdown file and hence it's commented.
 ```{r GraphPlot, message = FALSE, warning = FALSE}
-plot(products.apriori.pruned,method="graph")
 #plot(products.apriori.pruned,method="graph",interactive=TRUE,shading=NA)
+plot(products.apriori.pruned,method="graph")
 ```
+  
 #### Step 7: Association for most frequent item
 From the Item frequency plot we can see Magazine is the most frequent item and hence it's placed in the center with all other items plotted around it.
 

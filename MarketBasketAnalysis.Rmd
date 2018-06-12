@@ -184,7 +184,7 @@ Ex: We can see {Pencils} => {Candy Bar} ; {Toothpaste} => {Candy Bar}; {Pencils,
 This has some amount of redundancy.    
 We can identify and remove redundancy using below commands.  
 ```{r Redundant, message = FALSE, warning = FALSE}
-subset.matrix <- is.subset(products.apriori, products.apriori)
+subset.matrix <- is.subset(products.apriori, products.apriori, sparse = FALSE)
 subset.matrix[lower.tri(subset.matrix, diag=T)] <- NA
 redundant <- colSums(subset.matrix, na.rm=T) >= 1
 which(redundant)
@@ -237,7 +237,7 @@ We can see this plot is different from the previous graph plot. In this we direc
 Width of the arrow represents support and color represents lift. 
 Candy Bar => Magazine has the highest support but relatively low lift.
 
-```{r GraphPlotMagazine, message = FALSE, warning = FALSE}
+```{r GraphPlotMagazine, message = FALSE, warning = FALSE, results = "hide"}
 plot(products.apriori.magazine,method="graph",control = list(type="itemsets"))
 ```
 
